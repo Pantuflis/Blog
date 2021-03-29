@@ -17,6 +17,7 @@ ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+server = app.server
 
 gravatar = Gravatar(
     app,
