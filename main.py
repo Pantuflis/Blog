@@ -50,9 +50,9 @@ def admin_only(f):
 
 # CONNECT TO DB
 # try:
-app.config['SQLALCHEMY_DATABASE_URI'] = config("DATABASE_URL")
+# app.config['SQLALCHEMY_DATABASE_URI'] = config("DATABASE_URL")
 # except:
-#     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///blog.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///blog.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
