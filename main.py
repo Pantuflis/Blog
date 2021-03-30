@@ -87,7 +87,7 @@ class Comment(UserMixin, db.Model):
     comment = db.Column(db.Text(250), nullable=False)
 
 
-# db.create_all()
+db.create_all()
 
 
 @ app.route('/')
