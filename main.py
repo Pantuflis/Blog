@@ -14,13 +14,12 @@ from decouple import config
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = config("FLASK_KEY")
+app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-print(os.environ.get('FLASK_KEY'))
 
 gravatar = Gravatar(
     app,
@@ -49,10 +48,8 @@ def admin_only(f):
 
 
 # CONNECT TO DB
-# try:
-# app.config['SQLALCHEMY_DATABASE_URI'] = config("DATABASE_URL")
-# except:
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///blog.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    "DATABASE_URL", "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
