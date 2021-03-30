@@ -10,16 +10,17 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 from functools import wraps
-from app import app
+from decouple import config
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = config("FLASK_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-server = app.server
+print(os.environ.get('FLASK_KEY'))
 
 gravatar = Gravatar(
     app,
@@ -33,13 +34,13 @@ gravatar = Gravatar(
 )
 
 
-@login_manager.user_loader
+@ login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
 def admin_only(f):
-    @wraps(f)
+    @ wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or current_user.id != 1:
             return abort(403)
@@ -48,7 +49,10 @@ def admin_only(f):
 
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+# try:
+app.config['SQLALCHEMY_DATABASE_URI'] = config("DATABASE_URL")
+# except:
+#     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///blog.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -87,7 +91,7 @@ class Comment(UserMixin, db.Model):
     comment = db.Column(db.Text(250), nullable=False)
 
 
-db.create_all()
+# db.create_all()
 
 
 @ app.route('/')
@@ -174,7 +178,7 @@ def show_post(post_id):
             )
             db.session.add(new_comment)
             db.session.commit()
-            comments = db.session.query(Comment).all()
+    comments = db.session.query(Comment).all()
     if not current_user.is_authenticated:
         flash("You need to login or register to comment")
         return redirect(url_for('login'))
